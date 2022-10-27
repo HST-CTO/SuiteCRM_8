@@ -81,6 +81,12 @@ fi
 ################################################################################
 ################### Create Databases and User ##################################
 ################################################################################
+echo -e "$BCyan  ========================================================================="
+echo -e "$BCyan           Creating Databases and User for SuiteCRM...                     "
+echo -e "$BCyan  ========================================================================="
+echo -e "$Color_Off"
+sleep 1
+
 mysql -u root -e "SHOW DATABASES"
 
 echo -en "$BWhite Please Enter Databases Name $BYellow (default $DB_NAME_DEF):$BGreen"
@@ -96,14 +102,6 @@ read DB_PASSWD
 DB_PASSWD="${DB_PASSWD:-$DB_PASSWD_DEF}"
 
 echo -e "$Color_Off"
-
-echo -e "$BCyan  ========================================================================="
-echo -e "$BCyan           Creating Databases and User for SuiteCRM...                     "
-echo -e "$BCyan  ========================================================================="
-echo -e "$Color_Off"
-sleep 1
-
-
 
  RESULT=`mysql -u root -e "SHOW DATABASES" | grep $DB_NAME`
  if [ "$RESULT" == "$DB_NAME" ]; then
