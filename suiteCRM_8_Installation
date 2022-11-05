@@ -136,6 +136,7 @@ echo -e "$Color_Off"
     find . ! -user apache -exec chown apache:apache {} \;
     chmod +x bin/console
     service httpd restart
+    rm -rvf suitecrm-8-2-0-zip.zip
 
 
     echo -en "$BWhite Please Enter SuiteCRM Admin Name $BYellow (default $ADMIN_DEF):$BGreen"
