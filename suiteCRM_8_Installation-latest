@@ -32,17 +32,28 @@ BWhite='\033[1;37m'       # White
 ADMIN_DEF="admin"               # Defualt suitecrm admin user name
 ADMINPASS_DEF="admin@12345"     # Defualt suitecrm pass name
 date=`date`
+Suiteversion="8.2.0"
+prefix="tenant_"
+u="_"
 ################################
 
 #.1....###### MYSQL SHOW
+
+#.2....###### READING DATA FROM USER ######
+echo -en "$BWhite \n Please Enter SuiteCRM Company Name                        :$BGreen"
+read COMPANY
+
+echo -en "$BWhite \n Please Enter SuiteCRM Domain Name Or DNS Name/Entry       :$BGreen"
+read DOMAIN_NAME
+
 while true; do
  
-echo -en "$BWhite Do You Want Print/Show MySQL Databases ? Yes or No: $BGreen"
+echo -en "$BWhite Do You Want to Print MySQL Databases ? Yes or No: $BGreen"
 read showdatabases
  
       case $showdatabases in
             [yY][eE][sS]|[yY])
-echo -e "$BCyan-----------------------------Printing/Show Databases ------------------------------------$Color_Off"
+echo -e "$BCyan-----------------------------Printing Databases ------------------------------------$Color_Off"
 sleep 2   
 mysql -u root -e "SHOW DATABASES"                       
              break;;               
@@ -55,20 +66,11 @@ mysql -u root -e "SHOW DATABASES"
       esac 
 done
 
+# read -e -p "$(echo -e $BWhite Please Enter Databases User $Color_Off) : " $prefixDB_USER
+echo -en "$BWhite Please Enter SuiteCRM Databases Name                      :$BYellow"$prefix
+ read DB_NAME
 
-
-
-
-
-#.2....###### READING DATA FROM USER ######
-
-echo -en "$BWhite \n Please Enter SuiteCRM Domain Name Or DNS Name/Entry       :$BGreen"
-read DOMAIN_NAME
-
-echo -en "$BWhite Please Enter SuiteCRM Databases Name                      :$BGreen"
-read DB_NAME
-
-echo -en "$BWhite Please Enter SuiteCRM Databases Username                  :$BGreen"
+echo -en "$BWhite Please Enter SuiteCRM Databases Username                  :$BYellow"$prefix
 read DB_USER
 
 echo -en "$BWhite Please Enter SuiteCRM Databases Password                  :$BGreen"
@@ -85,10 +87,13 @@ echo -e "$Color_Off"
 
 echo -e "$BCyan------------------------------- SUMMARY OF INSTALLATION ---------------------------------$Color_Off"
 
-echo -en "$BGreen \n SuiteCRM Domain Name        :$BYellow $DOMAIN_NAME $Color_Off"
-echo -en "$BGreen \n SuiteCRM Databases Name     :$BYellow $DB_NAME $Color_Off"
-echo -en "$BGreen \n SuiteCRM Databases Username :$BYellow $DB_USER $Color_Off"
-echo -en "$BGreen \n SuiteCRM Databases Password :$BYellow $DB_USER $Color_Off"
+echo -en "$BGreen \n SuiteCRM Version            :$BYellow $Suiteversion $Color_Off"
+echo -en "$BGreen \n Company Name                :$BYellow $COMPANY $Color_Off"
+echo -en "$BGreen \n SuiteCRM DNS Name           :$BYellow $COMPANY.$DOMAIN_NAME $Color_Off"
+# echo -en "$BGreen \n SuiteCRM Domain Name        :$BYellow $DOMAIN_NAME $Color_Off"
+echo -en "$BGreen \n SuiteCRM Databases Name     :$BYellow $prefix$DB_NAME $Color_Off"
+echo -en "$BGreen \n SuiteCRM Databases Username :$BYellow $prefix$DB_USER $Color_Off"
+echo -en "$BGreen \n SuiteCRM Databases Password :$BYellow $DB_PASSWD $Color_Off"
 echo -en "$BGreen \n SuiteCRM Admin Name         :$BYellow $ADMIN $Color_Off"
 echo -e "$BGreen \n SuiteCRM Admin Password     :$BYellow $ADMINPASS $Color_Off"
 
@@ -141,10 +146,10 @@ sleep 2
     echo -e "$BWhite We Suggest Trying the New Database Name $Color_Off"
     exit 1
   else
-    echo -e "$BYellow The Database Name $DB_NAME Has Been Created Successfully! $Color_Off"
-    mysql -u root  -e "CREATE DATABASE $DB_NAME";
-    mysql -u root  -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWD'";
-    mysql -u root  -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost'";
+    echo -e "$BYellow The Database Name $prefix$DB_NAME Has Been Created Successfully! $Color_Off"
+    mysql -u root  -e "CREATE DATABASE $prefix$DB_NAME";
+    mysql -u root  -e "CREATE USER '$prefix$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWD'";
+    mysql -u root  -e "GRANT ALL PRIVILEGES ON $prefix$DB_NAME.* TO '$prefix$DB_USER'@'localhost'";
     mysql -u root  -e "FLUSH PRIVILEGES";
  fi
 
@@ -165,7 +170,7 @@ sleep 2
 
    
 
-    ./bin/console suitecrm:app:install -u "$ADMIN" -p "$ADMINPASS" -U "$DB_USER" -P "$DB_PASSWD" -H "localhost" -N "$DB_NAME" -S "https://$DOMAIN_NAME" -d "yes"
+    ./bin/console suitecrm:app:install -u "$ADMIN" -p "$ADMINPASS" -U "$prefix$DB_USER" -P "$DB_PASSWD" -H "localhost" -N "$prefix$DB_NAME" -S "https://$DOMAIN_NAME" -d "yes"
 
     find . -type d -not -perm 2755 -exec chmod 2755 {} \;
     find . -type f -not -perm 0644 -exec chmod 0644 {} \;
@@ -207,7 +212,7 @@ done
  
 while true; do
  DIR=/etc/letsencrypt/live/$DOMAIN_NAME
- echo -en "$BWhite Do you want install SSL ? Yes or No ...: $BGreen"
+ echo -en "$BWhite Do you want to install SSL ? Yes or No ...: $BGreen"
  read ssl
  
       case $ssl in
@@ -237,3 +242,4 @@ sleep 2
 done
 
 ########################  END #####################################################
+
