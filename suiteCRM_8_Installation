@@ -168,7 +168,7 @@ sudo chown -R apache:apache /var/www/html
 
 
         n|N|no|No|NO) echo -e "$Color_Off"
-        exit;;
+        break;;
  
         *) echo -e "$BYellow Wrong Input ! Please Answer Yes or No $Color_Off" 
  
@@ -189,8 +189,7 @@ while true; do
                             echo -e "$BCyan                                   Installing Let's Encrypt for $DOMAIN_NAME ....."
                             echo -e "$BCyan                         ========================================================================="
                             echo -e "$Color_Off"
-                            yum install epel-release -y
-                            yum install certbot python2-certbot-apache mod_ssl -y
+                     
                             certbot --apache -d $DOMAIN_NAME
                             #echo -e "$Color_Off" ;;
                             break;;
