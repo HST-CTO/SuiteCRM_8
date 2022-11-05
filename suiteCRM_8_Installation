@@ -28,13 +28,6 @@ BPurple='\033[1;35m'      # Purple
 BCyan='\033[1;36m'        # Cyan
 BWhite='\033[1;37m'       # White
 
-# Default Credentials
-DB_NAME_DEF="suitecrm_db"       # Defualt database name
-DB_USER_DEF="suitecrm_adm"      # Defualt database user name
-DB_PASSWD_DEF="suitecrm@12345"  # Defualt database password
-ADMIN_DEF="admin"               # Defualt suitecrm admin user name
-ADMINPASS_DEF="admin@12345"     # Defualt suitecrm pass name
-
 
 ################################
 while true; 
@@ -89,17 +82,17 @@ sleep 1
 
 mysql -u root -e "SHOW DATABASES"
 
-echo -en "$BWhite Please Enter Databases Name $BYellow (default $DB_NAME_DEF):$BGreen"
+echo -en "$BWhite Please Enter Databases Name :$BGreen"
 read DB_NAME
-DB_NAME="${DB_NAME:-$DB_NAME_DEF}"
 
-echo -en "$BWhite Please Enter Databases Username $BYellow (default $DB_USER_DEF):$BGreen"
+
+echo -en "$BWhite Please Enter Databases Username :$BGreen"
 read DB_USER
-DB_USER="${DB_USER:-$DB_USER_DEF}"
 
-echo -en "$BWhite Please Enter Databases Password $BYellow (default $DB_PASSWD_DEF):$BGreen"
+
+echo -en "$BWhite Please Enter Databases Password $BYellow :$BGreen"
 read DB_PASSWD
-DB_PASSWD="${DB_PASSWD:-$DB_PASSWD_DEF}"
+
 
 echo -e "$Color_Off"
 
@@ -136,16 +129,15 @@ echo -e "$Color_Off"
     find . ! -user apache -exec chown apache:apache {} \;
     chmod +x bin/console
     service httpd restart
-    rm -rvf suitecrm-8-2-0-zip.zip
 
 
-    echo -en "$BWhite Please Enter SuiteCRM Admin Name $BYellow (default $ADMIN_DEF):$BGreen"
+    echo -en "$BWhite Please Enter SuiteCRM Admin Name :$BGreen"
     read ADMIN
-    ADMIN="${ADMIN:-$ADMIN_DEF}"
+    
 
-    echo -en "$BWhite Please Enter SuiteCRM Password $BYellow (default $ADMINPASS_DEF):$BGreen"
+    echo -en "$BWhite Please Enter SuiteCRM Password :$BGreen"
     read ADMINPASS
-    ADMINPASS="${ADMINPASS:-$ADMINPASS_DEF}"
+    
     echo -e "$Color_Off"
 
     ./bin/console suitecrm:app:install -u "$ADMIN" -p "$ADMINPASS" -U "$DB_USER" -P "$DB_PASSWD" -H "localhost" -N "$DB_NAME" -S "https://$DOMAIN_NAME" -d "yes"
@@ -158,7 +150,7 @@ echo -e "$Color_Off"
     echo -en "$BGreen \n SuiteCRM Link: $BYellow http://$DOMAIN_NAME $Color_Off"
     echo -en "$BGreen \n SuiteCRM Admin User: $BYellow $ADMIN $Color_Off"
     echo -e "$BGreen \n SuiteCRM Admin Pass: $BYellow $ADMINPASS $Color_Off"
-    echo -e "$BGreen \n SuiteCRM And Databases Details Have been Stored In $BYellow /var/www/html/$DOMAIN_NAME.csv $Color_Off"
+    echo -e "$BGreen \n SuiteCRM And Databases Details Have been Stored In $BYellow /var/www/html/$DOMAIN_NAME/Credentials.txt $Color_Off"
 echo "SuiteCRM_Admin_Details:
 SuiteCRM Link:http://$DOMAIN_NAME
 SuiteCRM Admin User:$ADMIN 
@@ -168,7 +160,7 @@ DataBases_Details:
 Databases Name:  $DB_NAME
 Database UserName:$DB_USER
 Database Password:$DB_PASSWD
-" >/var/www/html/$DOMAIN_NAME.csv
+" >/var/www/html/$DOMAIN_NAME/Credentials.txt
 sudo chown -R apache:apache /var/www/html
 
     break;;
