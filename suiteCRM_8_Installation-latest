@@ -35,6 +35,9 @@ UNSC="_"                        # For Underscore
 DB_NAME_PREFIX="tenant_"
 DNS_SUFFIX="circlecrm.cloud"
 DB_PASS_DEF="PassW0rd!"
+# SUITECRM 
+SUITECRM_EXT_URL="https://suitecrm.com/download/128/suite82/561615/suitecrm-8-2-0-zip.zip"
+SUITECRM_FILE="suitecrm-8-2-0-zip.zip"
 SUITECRM_VER="8.2.0"            # Latest stable version of SuiteCRM from https://github.com/salesagility/SuiteCRM-Core.git/
 
 # Check if running as root  
@@ -165,15 +168,15 @@ echo -e "$BCyan---------------------------Installing SuiteCRM for $DOMAIN_NAME -
 sleep 2   
     cd /var/www/html
     mkdir $COMPANY && cd $COMPANY
-    wget -qc https://suitecrm.com/download/128/suite82/561615/suitecrm-8-2-0-zip.zip
-    unzip suitecrm-8-2-0-zip.zip
+    wget -qc $SUITECRM_EXT_URL
+    unzip $SUITECRM_FILE
 
     find . -type d -not -perm 2755 -exec chmod 2755 {} \;
     find . -type f -not -perm 0644 -exec chmod 0644 {} \;
     find . ! -user apache -exec chown apache:apache {} \;
     chmod +x bin/console
     service httpd restart
-    rm -rvf suitecrm-8-2-0-zip.zip
+    rm -rvf $SUITECRM_FILE
 
    
 
