@@ -32,9 +32,8 @@ BWhite='\033[1;37m'       # White
 ADMIN_DEF="admin"               # Defualt suitecrm admin user name
 ADMINPASS_DEF="admin@12345"     # Defualt suitecrm pass name
 date=`date`
-Suiteversion="8.2.0"
 prefix="tenant_"
-u="_"
+SUITECRM_VER="8.2.0"            # Latest stable version of SuiteCRM from https://github.com/salesagility/SuiteCRM-Core.git/
 ################################
 
 #.1....###### MYSQL SHOW
@@ -46,27 +45,13 @@ read COMPANY
 echo -en "$BWhite \n Please Enter SuiteCRM Domain Name Or DNS Name/Entry       :$BGreen"
 read DOMAIN_NAME
 
-while true; do
- 
-echo -en "$BWhite Do You Want to Print MySQL Databases ? Yes or No: $BGreen"
-read showdatabases
- 
-      case $showdatabases in
-            [yY][eE][sS]|[yY])
 echo -e "$BCyan-----------------------------Printing Databases ------------------------------------$Color_Off"
 sleep 2   
-mysql -u root -e "SHOW DATABASES"                       
-             break;;               
-        
-            
-            [nN][oO]|[nN]) echo -e "$Color_Off"
-             break;;
-    
-            *) echo -e "$BYellow Wrong Input ! Please Answer Yes or No $Color_Off" 
-      esac 
-done
+# mysql -u root -e "SHOW DATABASES"  
+mysql -u root -e "SHOW DATABASES LIKE 'tenant%';"                     
+ 
 
-# read -e -p "$(echo -e $BWhite Please Enter Databases User $Color_Off) : " $prefixDB_USER
+
 echo -en "$BWhite Please Enter SuiteCRM Databases Name                      :$BYellow"$prefix
  read DB_NAME
 
@@ -87,7 +72,7 @@ echo -e "$Color_Off"
 
 echo -e "$BCyan------------------------------- SUMMARY OF INSTALLATION ---------------------------------$Color_Off"
 
-echo -en "$BGreen \n SuiteCRM Version            :$BYellow $Suiteversion $Color_Off"
+echo -en "$BGreen \n SuiteCRM Version            :$BYellow $SUITECRM_VER $Color_Off"
 echo -en "$BGreen \n Company Name                :$BYellow $COMPANY $Color_Off"
 echo -en "$BGreen \n SuiteCRM DNS Name           :$BYellow $COMPANY.$DOMAIN_NAME $Color_Off"
 # echo -en "$BGreen \n SuiteCRM Domain Name        :$BYellow $DOMAIN_NAME $Color_Off"
@@ -123,6 +108,9 @@ else
     ServerName $DOMAIN_NAME
     ErrorLog "/var/log/httpd/$DOMAIN_NAME.error_log"
     CustomLog "/var/log/httpd/$DOMAIN_NAME.access_log" common
+    <LocationMatch "^/(.*)">
+        Header always append X-Frame-Options SAMEORIGIN
+    </LocationMatch>
 
      <Directory /var/www/html/$DOMAIN_NAME/public>
         AllowOverride All
@@ -181,7 +169,7 @@ echo -en "$BGreen \n SuiteCRM Link      : $BYellow http://$DOMAIN_NAME $Color_Of
 echo -en "$BGreen \n SuiteCRM Admin User: $BYellow $ADMIN $Color_Off"
 echo -e "$BGreen \n SuiteCRM Admin Pass : $BYellow $ADMINPASS $Color_Off"
 
-echo -e "$BGreen \n SuiteCRM And Databases Details Have been Stored In $BYellow /var/www/html/$DOMAIN_NAME.txt $Color_Off"
+echo -e "$BGreen \n SuiteCRM And Databases Details Have been Stored In $BYellow /var/www/html/$COMPANY.$DOMAIN_NAME.txt $Color_Off"
 
 echo "Creaction Date is: $date
 SuiteCRM_Admin_Details:
@@ -190,10 +178,10 @@ SuiteCRM Admin User:$ADMIN
 SuiteCRM Admin Pass:$ADMINPASS
 
 DataBases_Details:
-Databases Name:  $DB_NAME
-Database UserName:$DB_USER
+Databases Name:  $prefix$DB_NAME
+Database UserName:$prefix$DB_USER
 Database Password:$DB_PASSWD
-" >/var/www/html/$DOMAIN_NAME.txt
+" >/var/www/html/$COMPANY.$DOMAIN_NAME.txt
 sudo chown -R apache:apache /var/www/html
 
     break;;
@@ -242,4 +230,3 @@ sleep 2
 done
 
 ########################  END #####################################################
-
